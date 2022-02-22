@@ -8,6 +8,7 @@ const webpackConfig = {
   devtool: "eval-source-map",
   entry: path.resolve(__dirname, "./src/index.ts"),
   output: {
+    publicPath: "/",
     path: path.resolve(__dirname, "./dist"),
     filename: "[name][fullhash].bundle.js",
   },
@@ -37,6 +38,10 @@ const webpackConfig = {
               options: {},
             },
           },
+          {
+            test: /\.(png|jpg|jpeg|gif|svg|wav|mp3|ttf)$/,
+            use: ["file-loader"],
+          },
         ],
       },
     ],
@@ -52,9 +57,9 @@ const webpackConfig = {
 
   devServer: {
     port: 3000,
-    static: {
-      directory: path.join(__dirname, "src"),
-    },
+    // static: {
+    //   directory: path.join(__dirname, "src"),
+    // },
     open: false,
   },
 };

@@ -27,6 +27,7 @@ export function create(
     const viewportParams = viewportConfig.viewport || [0, 0, glwidth, glhegiht];
     webgl.viewport(...viewportParams);
   }
+  console.log("webgl: ", webgl);
   return webgl;
 }
 
