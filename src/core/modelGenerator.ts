@@ -22,28 +22,22 @@ export function cubeVertex(
 
   return {
     vertices: [
-      c.x - half.l, c.y + half.h, c.z + half.w,
-      c.x - half.l, c.y + half.h, c.z - half.w,
-      c.x + half.l, c.y + half.h, c.z - half.w,
-      c.x + half.l, c.y + half.h, c.z + half.w,
-      c.x - half.l, c.y - half.h, c.z + half.w,
-      c.x - half.l, c.y - half.h, c.z - half.w,
-      c.x + half.l, c.y - half.h, c.z - half.w,
-      c.x + half.l, c.y - half.h, c.z + half.w,
-    ],
+      [c.x - half.l, c.y + half.h, c.z + half.w],
+      [c.x - half.l, c.y + half.h, c.z - half.w],
+      [c.x + half.l, c.y + half.h, c.z - half.w],
+      [c.x + half.l, c.y + half.h, c.z + half.w],
+      [c.x - half.l, c.y - half.h, c.z + half.w],
+      [c.x - half.l, c.y - half.h, c.z - half.w],
+      [c.x + half.l, c.y - half.h, c.z - half.w],
+      [c.x + half.l, c.y - half.h, c.z + half.w],
+    ].flat(),
     indices: [
-      0, 1, 3,
-      0, 1, 4,
-      0, 3, 4,
-      2, 1, 3,
-      2, 1, 6,
-      2, 3, 6,
-      7, 3, 4,
-      7, 3, 6,
-      7, 4, 6,
-      5, 1, 4,
-      5, 1, 6,
-      5, 4, 6,
+      0, 3, 7, 7, 4, 0, // 前
+      1, 2, 6, 6, 5, 1, // 后
+      0, 1, 5, 5, 4, 0, // 左
+      3, 2, 6, 3, 7, 6, // 右
+      0, 1, 2, 0, 3, 2, // 上
+      4, 5, 6, 4, 7, 6, // 下
     ],
   };
 }

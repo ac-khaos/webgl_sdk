@@ -8,7 +8,7 @@ import { cubeVertex } from "./core/modelGenerator";
 console.log("glm: ", glm);
 // console.log("glmatrix: ", glmatrix);
 
-const __BYTESIEZ = 4;
+const BYTESIEZ = 4;
 
 const gl = webgl.create(document.getElementById("glcanvas") as HTMLCanvasElement, {
   width: document.body.clientWidth,
@@ -16,7 +16,18 @@ const gl = webgl.create(document.getElementById("glcanvas") as HTMLCanvasElement
   antialias: true,
 });
 
-const cubeModel = cubeVertex([0, 0, 0], 0.5, 0.2, 0.3);
+gl.clearColor(0.0, 0.0, 0.0, 1.0);
+gl.enable(gl.DEPTH_TEST);
+
+const cubeModel = cubeVertex([0, 0, 0], 0.5, 0.5, 0.5);
+cubeModel.textureVertices = [
+  0.0, 1.0,  1.0, 1.0,  1.0, 0.0,  0.0, 0.0,
+  1.0, 1.0,  0.0, 1.0,  0.0, 0.0,  1.0, 0.0,
+  1.0, 1.0,  0.1, 1.0,  0.0, 0.0,  1.0, 0.0,
+  0.0, 1.0,  1.0, 1.0,  1.0, 0.0,  0.0, 0.0,
+  0.0, 0.0,  0.0, 1.0,  1.0, 1.0,  1.0, 0.0,
+  0.0, 1.0,  0.0, 0.0,  1.0, 0.0,  1.0, 1.0,
+];
 console.log("cubeModel: ", cubeModel);
 
 // 设置着色器
@@ -30,10 +41,8 @@ gl.attachShader(program, fragmentShader);
 gl.linkProgram(program);
 gl.useProgram(program);
 
-gl.clearColor(0.0, 0.0, 0.0, 1.0);
-gl.clearDepth(1.0);
-gl.depthFunc(gl.LEQUAL);
-gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+const vao = gl.createVertexArray();
+gl.bindVertexArray(vao);
 
 const vbo = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
@@ -49,33 +58,33 @@ gl.enableVertexAttribArray(positionLocation);
 
 const matLocation = gl.getUniformLocation(program, "matrix");
 gl.uniformMatrix4fv(matLocation, false, glm.rotateX(0));
-gl.enable
 
-// gl.drawElements(gl.TRIANGLES, cubeModel.indices.length, gl.UNSIGNED_SHORT, 0);
+const textureBuffer = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, textureBuffer);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeModel.textureVertices), gl.STATIC_DRAW);
 
-// const textureLocation = gl.getAttribLocation(program, "in_texture");
-// gl.vertexAttribPointer(textureLocation, 2, gl.FLOAT, false, __BYTESIEZ * 9, __BYTESIEZ * 7);
-// gl.enableVertexAttribArray(textureLocation);
+const textureLocation = gl.getAttribLocation(program, "in_texture");
+gl.vertexAttribPointer(textureLocation, 2, gl.FLOAT, false, 0, 0);
+gl.enableVertexAttribArray(textureLocation);
 
 import("./textures/tan.jpg").then(res => {
   const texture = gl.createTexture();
-  const textureSampler1 = gl.getUniformLocation(program, "texture1");
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
   const image = new Image();
   image.src = res.default;
   image.onload = () => {
+    gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
+    const textureSampler1 = gl.getUniformLocation(program, "texture1");
     gl.uniform1i(textureSampler1, 0);
 
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    gl.clearDepth(1.0);
-    gl.depthFunc(gl.LEQUAL);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-    // gl.drawArrays(gl.TRIANGLES, 0, triangle.length);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_bit);
+    
     gl.drawElements(gl.TRIANGLES, cubeModel.indices.length, gl.UNSIGNED_SHORT, 0);
   };
 });
-
-
