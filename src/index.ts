@@ -3,7 +3,7 @@ import glm from "./glmatrix";
 import * as webgl from "./core/webgl";
 import vertexShaderCode from "./shaders/vertex";
 import fragmentShaderCode from "./shaders/fragment";
-import { cubeVertex } from "./core/modelGenerator";
+import mg from "./core/modelGenerator";
 
 console.log("glm: ", glm);
 // console.log("glmatrix: ", glmatrix);
@@ -19,15 +19,15 @@ const gl = webgl.create(document.getElementById("glcanvas") as HTMLCanvasElement
 gl.clearColor(0.0, 0.0, 0.0, 1.0);
 gl.enable(gl.DEPTH_TEST);
 
-const cubeModel = cubeVertex([0, 0, 0], 0.5, 0.5, 0.5);
+const cubeModel = mg.dataGenerator(mg.cubeModelGenerator([0, 0, 0], { long: 0.5, width: 0.5, height: 0.5 }));
 cubeModel.textureVertices = [
-  0.0, 1.0,  1.0, 1.0,  1.0, 0.0,  0.0, 0.0,
-  1.0, 1.0,  0.0, 1.0,  0.0, 0.0,  1.0, 0.0,
-  1.0, 1.0,  0.1, 1.0,  0.0, 0.0,  1.0, 0.0,
-  0.0, 1.0,  1.0, 1.0,  1.0, 0.0,  0.0, 0.0,
-  0.0, 0.0,  0.0, 1.0,  1.0, 1.0,  1.0, 0.0,
-  0.0, 1.0,  0.0, 0.0,  1.0, 0.0,  1.0, 1.0,
-];
+  [0.0, 1.0, 1.0, 1.0, 1.0, 0.0], [1.0, 0.0, 0.0, 0.0, 0.0, 1.0],
+  [0.0, 1.0, 1.0, 1.0, 1.0, 0.0], [1.0, 0.0, 0.0, 0.0, 0.0, 1.0],
+  [0.0, 1.0, 1.0, 1.0, 1.0, 0.0], [1.0, 0.0, 0.0, 0.0, 0.0, 1.0],
+  [0.0, 1.0, 1.0, 1.0, 1.0, 0.0], [1.0, 0.0, 0.0, 0.0, 0.0, 1.0],
+  [0.0, 1.0, 1.0, 1.0, 1.0, 0.0], [1.0, 0.0, 0.0, 0.0, 0.0, 1.0],
+  [0.0, 1.0, 1.0, 1.0, 1.0, 0.0], [1.0, 0.0, 0.0, 0.0, 0.0, 1.0],
+].flat();
 console.log("cubeModel: ", cubeModel);
 
 // 设置着色器
@@ -48,16 +48,9 @@ const vbo = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
 gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeModel.vertices), gl.STATIC_DRAW);
 
-const ebo = gl.createBuffer();
-gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ebo);
-gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeModel.indices), gl.STATIC_DRAW)
-
 const positionLocation = gl.getAttribLocation(program, "position");
 gl.vertexAttribPointer(positionLocation, 3, gl.FLOAT, false, 0, 0);
 gl.enableVertexAttribArray(positionLocation);
-
-const matLocation = gl.getUniformLocation(program, "matrix");
-gl.uniformMatrix4fv(matLocation, false, glm.rotateX(0));
 
 const textureBuffer = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, textureBuffer);
@@ -66,6 +59,13 @@ gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeModel.textureVertices), gl.S
 const textureLocation = gl.getAttribLocation(program, "in_texture");
 gl.vertexAttribPointer(textureLocation, 2, gl.FLOAT, false, 0, 0);
 gl.enableVertexAttribArray(textureLocation);
+
+const matLocation = gl.getUniformLocation(program, "matrix");
+gl.uniformMatrix4fv(matLocation, false, glm.rotateX(90));
+
+const ebo = gl.createBuffer();
+gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ebo);
+gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeModel.indices), gl.STATIC_DRAW)
 
 import("./textures/tan.jpg").then(res => {
   const texture = gl.createTexture();
