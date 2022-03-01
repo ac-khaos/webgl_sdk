@@ -1,6 +1,6 @@
 export interface ModelDescribe {
   vertices: Array<Float32Array>;
-  indices: Array<number>;
+  indices: Array<Uint16Array>;
 }
 
 export interface CubeSides {
