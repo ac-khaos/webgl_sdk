@@ -9,7 +9,7 @@ export interface CubeSides {
   height: number;
 }
 
-function cubeModelGenerator(centerPosition: Float32Array, sides: CubeSides): ModelDescribe {
+function cubeModelCreater(centerPosition: Float32Array, sides: CubeSides): ModelDescribe {
   const c = { x: centerPosition[0], y: centerPosition[1], z: centerPosition[2] };
   const half = { w: sides.width / 2, l: sides.long / 2, h: sides.height / 2 };
 
@@ -23,7 +23,7 @@ function cubeModelGenerator(centerPosition: Float32Array, sides: CubeSides): Mod
   const v8 = [c.x + half.l, c.y - half.h, c.z + half.w];
 
   return {
-    vertices: [v1, v2, v3, v4, v5, v6, v7, v8],
+    vertices: [v1, v2, v3, v4, v5, v6, v7, v8].map((v) => new Float32Array(v)),
     indices: [
       [0, 3, 7],
       [7, 4, 0], // 前
@@ -32,25 +32,25 @@ function cubeModelGenerator(centerPosition: Float32Array, sides: CubeSides): Mod
       [0, 1, 5],
       [5, 4, 0], // 左
       [3, 2, 6],
-      [3, 7, 6], // 右
+      [6, 7, 3], // 右
       [0, 1, 2],
       [0, 3, 2], // 上
       [4, 5, 6],
       [4, 7, 6], // 下
-    ],
+    ].map((i) => new Uint16Array(i)),
   };
 }
 
-function dataGenerator(model: ModelDescribe) {
-  const vertices_2d = model.indices.flat().map((index) => model.vertices[index]);
-  const indices = vertices_2d.map((_, idx) => idx);
+function modelGenerator(model: ModelDescribe) {
+  const vertices2d = model.indices.flat().map((index) => model.vertices[index]);
+  const indices = vertices2d.map((_, idx) => idx);
   return {
-    vertices: new Float32Array(vertices_2d.flat()),
-    indices,
+    vertices: new Float32Array(vertices2d.flat()),
+    indices: new Uint16Array(indices),
   };
 }
 
 export default {
-  cubeModelGenerator,
-  dataGenerator,
+  cubeModelCreater,
+  modelGenerator,
 };

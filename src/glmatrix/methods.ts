@@ -13,8 +13,8 @@ export function rotateX(deg: Number): Float32Array {
   const cos = Math.cos(radian);
   return new Float32Array([
     1, 0, 0, 0,
-    0, cos, sin, 0,
-    0, -sin, cos, 0,
+    0, cos, -sin, 0,
+    0, sin, cos, 0,
     0, 0, 0, 1,
   ]);
 }
