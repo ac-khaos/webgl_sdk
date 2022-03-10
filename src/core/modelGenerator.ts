@@ -23,7 +23,7 @@ function cubeModelCreater(centerPosition: Float32Array, sides: CubeSides): Model
   const v8 = [c.x + half.l, c.y - half.h, c.z + half.w];
 
   return {
-    vertices: [v1, v2, v3, v4, v5, v6, v7, v8].map((v) => new Float32Array(v)),
+    vertices: [v1, v2, v3, v4, v5, v6, v7, v8],
     indices: [
       [0, 3, 7],
       [7, 4, 0], // 前
@@ -37,7 +37,7 @@ function cubeModelCreater(centerPosition: Float32Array, sides: CubeSides): Model
       [0, 3, 2], // 上
       [4, 5, 6],
       [4, 7, 6], // 下
-    ].map((i) => new Uint16Array(i)),
+    ],
   };
 }
 
