@@ -2,45 +2,42 @@ import glm from "./glmatrix";
 // import * as glmatrix from "gl-matrix";
 import * as webgl from "./core/webgl";
 import { exampleShaders } from "./shaders";
-import mg from "./core/modelGenerator";
+import model from "./core/model";
 
 console.log("glm: ", glm);
 // console.log("glmatrix: ", glmatrix);
 
 const BYTESIEZ = 4;
 
-const gl = webgl.create(document.getElementById("glcanvas") as HTMLCanvasElement, {
-  width: document.body.clientWidth,
-  height: document.body.clientHeight,
-  antialias: true,
-});
+const gl = webgl.create(
+  document.getElementById("glcanvas") as HTMLCanvasElement,
+  {
+    width: document.body.clientWidth,
+    height: document.body.clientHeight,
+    antialias: true,
+  }
+);
 
 gl.clearColor(0.0, 0.0, 0.0, 1.0);
 gl.enable(gl.DEPTH_TEST);
 
-const cubeModel = mg.modelGenerator(
-  mg.cubeModelCreater([0, 0, 0], { long: 0.5, width: 0.5, height: 0.5 })
+const cubeModel = model.generator(
+  model.creater["cube"]([0, 0, 0], { long: 0.5, width: 0.5, height: 0.5 })
 );
 
-cubeModel.txrs = new Float32Array([
-  0.0, 1.0, 1.0, 1.0, 1.0, 0.0,
-  1.0, 0.0, 0.0, 0.0, 0.0, 1.0,
-  1.0, 1.0, 0.0, 1.0, 0.0, 0.0,
-  0.0, 0.0, 1.0, 0.0, 1.0, 1.0,
-  0.0, 1.0, 1.0, 1.0, 1.0, 0.0,
-  1.0, 0.0, 0.0, 0.0, 0.0, 1.0,
-  0.0, 1.0, 1.0, 1.0, 1.0, 0.0,
-  1.0, 0.0, 0.0, 0.0, 0.0, 1.0,
-  0.0, 0.0, 0.0, 1.0, 1.0, 1.0,
-  0.0, 0.0, 1.0, 0.0, 1.0, 1.0,
-  0.0, 0.0, 0.0, 1.0, 1.0, 1.0,
-  0.0, 0.0, 1.0, 0.0, 1.0, 1.0,
-]);
 console.log("ssssss-----", cubeModel);
 
 // 设置着色器
-const vertexShader = webgl.loadShader(gl, gl.VERTEX_SHADER, exampleShaders.vertexShader);
-const fragmentShader = webgl.loadShader(gl, gl.FRAGMENT_SHADER, exampleShaders.fragmentShader);
+const vertexShader = webgl.loadShader(
+  gl,
+  gl.VERTEX_SHADER,
+  exampleShaders.vertexShader
+);
+const fragmentShader = webgl.loadShader(
+  gl,
+  gl.FRAGMENT_SHADER,
+  exampleShaders.fragmentShader
+);
 
 const program = gl.createProgram();
 gl.attachShader(program, vertexShader);
@@ -72,7 +69,7 @@ const ebo = gl.createBuffer();
 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ebo);
 gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, cubeModel.indices, gl.STATIC_DRAW);
 
-import("./textures/tan.jpg").then((res) => {
+import("./textures/textureExample.jpeg").then((res) => {
   const texture = gl.createTexture();
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
   const image = new Image();
@@ -88,23 +85,30 @@ import("./textures/tan.jpg").then((res) => {
     const textureSampler1 = gl.getUniformLocation(program, "texture1");
     gl.uniform1i(textureSampler1, 0);
 
-    let xdeg = 0, ydeg = 0, zdeg = 0;
+    let xdeg = 0,
+      ydeg = 0,
+      zdeg = 0;
     setInterval(() => {
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-      
+
       const matLocationx = gl.getUniformLocation(program, "rotatex_matrix");
       gl.uniformMatrix4fv(matLocationx, false, glm.rotateX(xdeg));
       const matLocationy = gl.getUniformLocation(program, "rotatey_matrix");
       gl.uniformMatrix4fv(matLocationy, false, glm.rotateY(ydeg));
       const matLocationz = gl.getUniformLocation(program, "rotatez_matrix");
       gl.uniformMatrix4fv(matLocationz, false, glm.rotateZ(zdeg));
-    
-      gl.drawElements(gl.TRIANGLES, cubeModel.indices.length, gl.UNSIGNED_SHORT, 0);
-      
+
+      gl.drawElements(
+        gl.TRIANGLES,
+        cubeModel.indices.length,
+        gl.UNSIGNED_SHORT,
+        0
+      );
+
       zdeg = zdeg === 360 ? 0 : zdeg + 0.1;
       xdeg = xdeg === 360 ? 0 : xdeg + 0.1;
       ydeg = ydeg === 360 ? 0 : ydeg + 0.1;
-    }, 1)
+    }, 10);
   };
 });
 
