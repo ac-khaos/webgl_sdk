@@ -18,8 +18,8 @@ export interface ModelFace {
     [number, number, number, number],
     [number, number, number, number]
   ];
-  // 纹理
-  texture?: Array<string>;
+  // 纹理id
+  textureId?: string | number;
   // 纹理坐标 xy
   txrs?: [[number, number], [number, number], [number, number]];
 }
@@ -29,4 +29,9 @@ export interface Model {
   vertices: Array<ModelVertex>;
   // 面
   faces: Array<ModelFace>;
+}
+
+export interface Texture {
+  id: string | number;
+  source: Promise<any>;
 }

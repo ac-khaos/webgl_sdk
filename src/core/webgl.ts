@@ -5,12 +5,6 @@ export interface ViewportConfig {
   viewport?: [x: number, y: number, width: number, height: number];
 }
 
-export interface VectexDescribe {
-  vertex: Float32Array;
-  color?: Float32Array;
-  texture?: Float32Array;
-}
-
 // 创建webgl
 export function create(
   canvasElement: HTMLCanvasElement,
@@ -32,7 +26,7 @@ export function create(
 }
 
 // 加载并编译着色器
-export function loadShader(
+export function shaderLoader(
   webgl: WebGL2RenderingContext,
   shaderType: number,
   shaderSource: string
@@ -46,12 +40,12 @@ export function loadShader(
   return shader;
 }
 
-// 格式化顶点数据
-export function formatVertexArray(vectexDescribes: Array<VectexDescribe> = []): Float32Array {
-  let float32Vertices = new Float32Array(
-    vectexDescribes.reduce((arr, describe) => {
-      return arr.concat(describe.vertex, describe.color, describe.texture);
-    }, [])
-  );
-  return float32Vertices;
+// 纹理加载器
+export function texturesLoader(webgl, textures) {
+  const textutesImports = textures.map((texture) => import(`${texture.source}`));
+  Promise.all(textutesImports).then((imps) => {
+    console.log("ssssss------", imps);
+  });
 }
+
+

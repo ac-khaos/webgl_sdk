@@ -21,19 +21,19 @@ const gl = webgl.create(
 gl.clearColor(0.0, 0.0, 0.0, 1.0);
 gl.enable(gl.DEPTH_TEST);
 
-const cubeModel = model.generator(
+const cubeModel = model.convert(
   model.creater["cube"]([0, 0, 0], { long: 0.5, width: 0.5, height: 0.5 })
 );
 
 console.log("ssssss-----", cubeModel);
 
 // 设置着色器
-const vertexShader = webgl.loadShader(
+const vertexShader = webgl.shaderLoader(
   gl,
   gl.VERTEX_SHADER,
   exampleShaders.vertexShader
 );
-const fragmentShader = webgl.loadShader(
+const fragmentShader = webgl.shaderLoader(
   gl,
   gl.FRAGMENT_SHADER,
   exampleShaders.fragmentShader
@@ -112,8 +112,4 @@ import("./textures/textureExample.jpeg").then((res) => {
   };
 });
 
-// Promise.all([
-//   import("./textures/tan.jpg"),
-//   import("./textures/texture2.jpeg"),
-//   import("./textures/textureExample.jpeg"),
-// ]).then((imps) => {});
+// webgl.texturesLoader(gl, [{id: 0, source: "./textures/tan.jpg"}]);

@@ -1,9 +1,10 @@
+import handlers from "./handlers";
 import creater from "./creater";
-import generator from "./generator";
 
 export * from "./interfaces";
 
 export default {
+  ...handlers,
   creater,
-  generator,
+  // generator,
 };
