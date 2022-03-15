@@ -30,8 +30,3 @@ export interface Model {
   // 面
   faces: Array<ModelFace>;
 }
-
-export interface Texture {
-  id: string | number;
-  source: Promise<any>;
-}

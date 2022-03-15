@@ -3,13 +3,17 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
+const webpackMode = process.env.mode || "development";
+
+const outputBaseDir = "./dist";
+
 const webpackConfig = {
-  mode: "development",
+  mode: webpackMode,
   devtool: "eval-source-map",
   entry: path.resolve(__dirname, "./src/index.ts"),
   output: {
     publicPath: "/",
-    path: path.resolve(__dirname, "./dist"),
+    path: path.resolve(__dirname, outputBaseDir),
     filename: "[name][fullhash].bundle.js",
   },
   module: {
@@ -40,7 +44,11 @@ const webpackConfig = {
           },
           {
             test: /\.(png|jpg|jpeg|gif|svg|wav|mp3|ttf)$/,
-            use: ["file-loader"],
+            use: {
+              loader: "file-loader",
+              options: {
+              },
+            },
           },
         ],
       },
